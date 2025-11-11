@@ -9,51 +9,56 @@
 
 ### ✅ Completed Setup (90%)
 
-| Component | Status | Version | Notes |
-|-----------|--------|---------|-------|
-| Python | ✅ | 3.11.9 | In virtual environment |
-| PyTorch | ✅ | 2.6.0+cu124 | Matches CUDA 12.4 |
-| CUDA | ✅ | 12.4 | System CUDA |
-| GPU | ⚠️ | RTX 5060 Ti (16GB) | See warning below |
-| NumPy | ✅ | 2.2.6 | |
-| TorchVision | ✅ | 0.21.0+cu124 | |
-| timm | ✅ | 0.4.12 | PyTorch Image Models |
-| einops | ✅ | 0.8.1 | Tensor operations |
-| fvcore | ✅ | 0.1.5 | Facebook core library |
-| Matplotlib | ✅ | Installed | Visualization |
-| Seaborn | ✅ | Installed | Statistical plots |
-| scikit-learn | ✅ | Installed | Metrics |
+| Component    | Status | Version            | Notes                  |
+| ------------ | ------ | ------------------ | ---------------------- |
+| Python       | ✅     | 3.11.9             | In virtual environment |
+| PyTorch      | ✅     | 2.6.0+cu124        | Matches CUDA 12.4      |
+| CUDA         | ✅     | 12.4               | System CUDA            |
+| GPU          | ⚠️     | RTX 5060 Ti (16GB) | See warning below      |
+| NumPy        | ✅     | 2.2.6              |                        |
+| TorchVision  | ✅     | 0.21.0+cu124       |                        |
+| timm         | ✅     | 0.4.12             | PyTorch Image Models   |
+| einops       | ✅     | 0.8.1              | Tensor operations      |
+| fvcore       | ✅     | 0.1.5              | Facebook core library  |
+| Matplotlib   | ✅     | Installed          | Visualization          |
+| Seaborn      | ✅     | Installed          | Statistical plots      |
+| scikit-learn | ✅     | Installed          | Metrics                |
 
 ### ⏳ Pending Installation (10%)
 
-| Component | Status | Required For | Action |
-|-----------|--------|--------------|--------|
-| **Visual Studio Build Tools** | ❌ | Compile CUDA kernels | [Download](https://visualstudio.microsoft.com/visual-cpp-build-tools/) |
-| **selective_scan_cuda_core** | ❌ | MambaTSR SS2D operation | Install after Build Tools |
+| Component                     | Status | Required For            | Action                                                                 |
+| ----------------------------- | ------ | ----------------------- | ---------------------------------------------------------------------- |
+| **Visual Studio Build Tools** | ❌     | Compile CUDA kernels    | [Download](https://visualstudio.microsoft.com/visual-cpp-build-tools/) |
+| **selective_scan_cuda_core**  | ❌     | MambaTSR SS2D operation | Install after Build Tools                                              |
 
 ---
 
 ## ⚠️ Important Warning: RTX 5060 Ti
 
 ```
-NVIDIA GeForce RTX 5060 Ti with CUDA capability sm_120 is not compatible 
+NVIDIA GeForce RTX 5060 Ti with CUDA capability sm_120 is not compatible
 with the current PyTorch installation.
 ```
 
 **Impact:**
+
 - PyTorch 2.6.0 does NOT support compute capability 12.0 (RTX 50 series)
 - Model may run slower or not utilize full GPU potential
 - May fall back to compatibility mode
 
 **Solutions:**
+
 1. **Option A - Upgrade to PyTorch Nightly** (Recommended):
+
    ```bash
    pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu124
    ```
+
    - Pros: Full RTX 5060 Ti support
    - Cons: Nightly builds may be unstable
 
 2. **Option B - Wait for PyTorch 2.7+**:
+
    - Expected Q1 2026
    - Stable release with RTX 50 series support
 
@@ -128,6 +133,7 @@ python check_mambatsr_env.py
 ```
 
 Look for:
+
 ```
 ✅ Selective Scan Kernel: Installed
 ✓ Super_Mamba model created successfully
@@ -178,12 +184,13 @@ class Super_Mamba(nn.Module):
        - PatchMerging: H,W → H/2,W/2; C → 2C
        - VSSBlock: Selective Scan 2D (SS2D) operation
     3. Classifier: LayerNorm → AvgPool → Linear(39 classes)
-    
+
     Parameters: ~90k (extremely lightweight!)
     """
 ```
 
 ### Adaptations for PlantVillage:
+
 - ✅ `num_classes=39` (instead of 43 traffic signs)
 - ✅ Image size: 32x32 (as per MambaTSR paper)
 - ✅ Data augmentation: ColorJitter, Flip, Rotation
@@ -194,16 +201,19 @@ class Super_Mamba(nn.Module):
 ## 💡 Tips
 
 1. **Build Tools installation is THE bottleneck**
+
    - Takes 30-40 minutes
    - Requires ~8GB download
    - Restart after installation recommended
 
 2. **Selective scan compilation is SLOW**
+
    - Takes 5-10 minutes
    - No progress bar shown
    - Don't cancel! Wait patiently
 
 3. **RTX 5060 Ti compatibility**
+
    - Consider PyTorch nightly for full GPU utilization
    - Or accept slower training with current setup
 
@@ -218,11 +228,13 @@ class Super_Mamba(nn.Module):
 ## 📊 Expected Results
 
 Based on MambaTSR paper (traffic signs):
+
 - **Accuracy:** 95-98% on test set
 - **Parameters:** ~90k (very lightweight)
 - **Training time:** 2-4 hours (depends on GPU)
 
 For PlantVillage (39 classes, 54k images):
+
 - **Expected accuracy:** 90-95% (more classes, similar architecture)
 - **Training time:** 4-8 hours (larger dataset)
 
@@ -230,22 +242,24 @@ For PlantVillage (39 classes, 54k images):
 
 ## 🆚 Comparison with Ensemble Models
 
-| Model | Parameters | Accuracy (Expected) | Training Time |
-|-------|------------|---------------------|---------------|
-| EfficientNetB3 | 12M | 97%+ | 2-3 hours |
-| ResNet50 | 25M | 96%+ | 2-3 hours |
-| DenseNet121 | 8M | 96%+ | 2-3 hours |
-| InceptionV3 | 24M | 96%+ | 3-4 hours |
-| **Ensemble** | 69M | **98%+** | 8-12 hours |
-| **Super_Mamba** | **90k** | **90-95%** | **4-8 hours** |
+| Model           | Parameters | Accuracy (Expected) | Training Time |
+| --------------- | ---------- | ------------------- | ------------- |
+| EfficientNetB3  | 12M        | 97%+                | 2-3 hours     |
+| ResNet50        | 25M        | 96%+                | 2-3 hours     |
+| DenseNet121     | 8M         | 96%+                | 2-3 hours     |
+| InceptionV3     | 24M        | 96%+                | 3-4 hours     |
+| **Ensemble**    | 69M        | **98%+**            | 8-12 hours    |
+| **Super_Mamba** | **90k**    | **90-95%**          | **4-8 hours** |
 
 **MambaTSR Advantages:**
+
 - ⚡ **700x fewer parameters** than ensemble
 - 💾 **Much smaller model size** (~350KB vs 270MB)
 - 🚀 **Faster inference** (good for deployment)
 - 📱 **Mobile-friendly** (can run on edge devices)
 
 **MambaTSR Trade-offs:**
+
 - 📉 Slightly lower accuracy (90-95% vs 98%+)
 - 🔧 More complex setup (CUDA kernels required)
 - 🆕 Newer architecture (less mature than CNNs)

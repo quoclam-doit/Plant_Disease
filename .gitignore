@@ -2,6 +2,23 @@
 Data/
 data/
 
+# Python virtual environments
+.venv/
+.venv_wsl/
+venv/
+env/
+
+# Trained models (too large)
+models/
+*.pth
+*.pt
+
+# External repos
+MambaTSR/
+
+# Archive files
+archive/
+
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints/
 */.ipynb_checkpoints/*
@@ -12,8 +29,6 @@ __pycache__/
 *$py.class
 *.so
 .Python
-env/
-venv/
 ENV/
 build/
 develop-eggs/

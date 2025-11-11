@@ -3,11 +3,13 @@
 ## 🎯 Tình trạng hiện tại
 
 ✅ **Đã hoàn thành:**
+
 - PyTorch 2.6.0 với CUDA 12.4 (match với system CUDA)
 - Virtual environment đã setup đúng
 - Notebook MambaTSR đã tạo hoàn chỉnh
 
 ❌ **Còn thiếu:**
+
 - **Microsoft Visual C++ Build Tools** (để compile CUDA kernels)
 
 ---
@@ -17,10 +19,12 @@
 ### Option A: Cài đặt đầy đủ (Recommended)
 
 1. **Download Visual Studio Build Tools:**
+
    - Link: https://visualstudio.microsoft.com/visual-cpp-build-tools/
    - Hoặc: https://aka.ms/vs/17/release/vs_BuildTools.exe
 
 2. **Cài đặt với workloads sau:**
+
    - ✅ **Desktop development with C++**
    - ✅ **MSVC v143 - VS 2022 C++ x64/x86 build tools** (Latest)
    - ✅ **Windows 10 SDK** (10.0.20348.0 or latest)
@@ -31,6 +35,7 @@
 ### Option B: Minimal Install (nhanh hơn)
 
 Chỉ cài đặt:
+
 - MSVC compiler
 - Windows SDK
 - CMake
@@ -82,12 +87,14 @@ python -c "import selective_scan_cuda_core; print('✓ Selective scan installed 
 ### Issue 1: "cl.exe not found"
 
 **Solution:**
+
 - Cài đặt lại Visual Studio Build Tools
 - Hoặc add to PATH: `C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\<version>\bin\Hostx64\x64`
 
 ### Issue 2: "ninja not found warning"
 
 **Solution:**
+
 ```powershell
 pip install ninja
 ```
@@ -109,11 +116,13 @@ pip install ninja
 Nếu không muốn cài Build Tools, có thể thử:
 
 1. **Tìm pre-compiled wheel** (nếu có):
+
    ```powershell
    pip install selective-scan-cuda --find-links https://github.com/...
    ```
 
 2. **Hoặc sử dụng WSL2** (Linux environment):
+
    - Easier to compile CUDA code
    - Không cần Visual Studio
 
@@ -123,12 +132,12 @@ Nếu không muốn cài Build Tools, có thể thử:
 
 ## 📊 Expected Timeline
 
-| Task | Duration | Status |
-|------|----------|--------|
-| Download Build Tools | 5-10 min | ⏳ Pending |
-| Install Build Tools | 10-20 min | ⏳ Pending |
-| Compile selective_scan | 5-10 min | ⏳ Pending |
-| **Total** | **~30-40 min** | ⏳ |
+| Task                   | Duration       | Status     |
+| ---------------------- | -------------- | ---------- |
+| Download Build Tools   | 5-10 min       | ⏳ Pending |
+| Install Build Tools    | 10-20 min      | ⏳ Pending |
+| Compile selective_scan | 5-10 min       | ⏳ Pending |
+| **Total**              | **~30-40 min** | ⏳         |
 
 ---
 
