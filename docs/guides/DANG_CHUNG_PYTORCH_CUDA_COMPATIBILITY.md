@@ -1,6 +1,6 @@
 # BẰNG CHỨNG: PYTORCH CUDA COMPATIBILITY ISSUE
 
-## 1. BẰ NG CHỨNG TỪ PYTORCH (Kiểm tra thực tế)
+## 1. BẰNG CHỨNG TỪ PYTORCH (Kiểm tra thực tế)
 
 ### Command kiểm tra:
 
@@ -156,7 +156,3 @@ else:
 **→ KHÔNG PHẢI thiếu library, MÀ LÀ binary không support GPU mới**
 
 ---
-
-**Ngày tạo:** 10/11/2025  
-**Người kiểm tra:** GitHub Copilot + User verification  
-**Máy kiểm tra:** RTX 5060 Ti, PyTorch 2.6.0+cu124, Windows 11

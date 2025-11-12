@@ -691,4 +691,3 @@ CODE GỐC TỪ MambaTSR (KHÔNG ĐỔI):
 2. ✅ `BAO_CAO_VISION_MAMBA_2.md` - Vision Mamba 2 report
 3. ✅ `TRAINING_RESULTS_REPORT.md` - Training results
 
-**Status:** ✅ Code hoạt động tốt, sẵn sàng share với thầy!
