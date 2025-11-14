@@ -297,7 +297,6 @@ jupyter notebook notebooks/Plant_Disease_MambaTSR.ipynb
 
 ### Q1: Tại sao code của bạn khác với MambaTSR gốc?
 
-**A:** Chúng tôi **KHÔNG copy** code MambaTSR. Chúng tôi chỉ:
 
 - ✅ **Import** class VSSM từ MambaTSR repo (như import library)
 - ✅ **Viết mới** training script cho PlantVillage dataset
