@@ -69,6 +69,7 @@ python setup_mambatsr.py
 ```
 
 This script will:
+
 - Clone MambaTSR repository
 - Install PyTorch nightly (CUDA 12.4)
 - Compile selective_scan CUDA kernels
@@ -101,6 +102,7 @@ cd ../../..
 Download PlantVillage dataset and place in `Data/PlantVillage/PlantVillage-Dataset-master/`
 
 Structure:
+
 ```
 Data/
 └── PlantVillage/
@@ -120,15 +122,15 @@ python train_mambatsr_plantvillage.py
 
 ### Performance Metrics
 
-| Metric | Value |
-|--------|-------|
-| **Best Val Accuracy** | 98.96% |
-| **Final Train Accuracy** | 99.92% |
-| **Overfitting Gap** | 0.96% |
-| **Training Time** | 3:00:57 |
-| **Epochs** | 50 |
-| **Batch Size** | 32 |
-| **Image Size** | 64×64 |
+| Metric                   | Value   |
+| ------------------------ | ------- |
+| **Best Val Accuracy**    | 98.96%  |
+| **Final Train Accuracy** | 99.92%  |
+| **Overfitting Gap**      | 0.96%   |
+| **Training Time**        | 3:00:57 |
+| **Epochs**               | 50      |
+| **Batch Size**           | 32      |
+| **Image Size**           | 64×64   |
 
 ### Model Architecture
 
@@ -143,11 +145,13 @@ python train_mambatsr_plantvillage.py
 ### Key Innovations
 
 1. **CUDA Forward Compatibility**
+
    - RTX 5060 Ti has `sm_120` (compute capability 12.0)
    - CUDA doesn't support sm_120 compilation yet
    - Solution: Compile for `compute_90` → runs on `sm_120` via forward compatibility
 
 2. **Image Size Optimization**
+
    - Standard: 224×224 → ~17 hours/epoch
    - Optimized: 64×64 → ~3.5 minutes/epoch
    - **16× speedup** with only ~1% accuracy trade-off
@@ -160,11 +164,13 @@ python train_mambatsr_plantvillage.py
 ### System Requirements
 
 **Minimum:**
+
 - GPU: NVIDIA RTX 3060+ (8GB VRAM)
 - RAM: 16GB
 - Storage: 50GB
 
 **Recommended:**
+
 - GPU: NVIDIA RTX 4060 Ti / RTX 5060 Ti (16GB VRAM)
 - RAM: 32GB
 - Storage: 100GB SSD
@@ -197,6 +203,7 @@ This project uses **MambaTSR (Vision State Space Model)** for plant disease clas
 - **Authors**: VIDAR Vision Lab
 
 **Key Features:**
+
 - State-of-the-art vision architecture
 - Linear complexity O(N) vs Transformer O(N²)
 - Selective scan mechanism for efficient processing
@@ -211,19 +218,59 @@ This project uses **MambaTSR (Vision State Space Model)** for plant disease clas
 
 ## 🛠️ Development
 
+### ⚠️ Important: Code Relationship
+
+**This repository contains:**
+
+- ✅ `train_mambatsr_plantvillage.py` - **NEW training script** adapted for PlantVillage dataset
+- ✅ Custom data loading, configuration, and training pipeline
+- ✅ Documentation and setup utilities
+
+**This repository DOES NOT contain:**
+
+- ❌ Model architecture (VSSM class) - imported from external MambaTSR repo
+- ❌ CUDA kernels - compiled from MambaTSR repo during setup
+
+**Relationship:**
+
+| File                             | Location                                                                  | Purpose               | Author              |
+| -------------------------------- | ------------------------------------------------------------------------- | --------------------- | ------------------- |
+| `train_mambatsr_plantvillage.py` | **This repo**                                                             | PlantVillage training | ✅ **Our work**     |
+| `MambaTSR/models/vmamba.py`      | [MambaTSR repo](https://github.com/1024AILab/MambaTSR)                    | VSSM model class      | ❌ Original authors |
+| `MambaTSR/train.py`              | [MambaTSR repo](https://github.com/1024AILab/MambaTSR/blob/main/train.py) | ImageNet training     | ❌ Original authors |
+
+**Key Differences:**
+
+```python
+# MambaTSR/train.py (Original - ImageNet)
+- Dataset: ImageNet-1K (1.28M images, 1000 classes)
+- Image size: 224×224
+- Training: Distributed training on multiple GPUs
+- Config: Command-line arguments
+
+# train_mambatsr_plantvillage.py (Ours - PlantVillage)
+- Dataset: PlantVillage (54K images, 39 classes)  ✅
+- Image size: 64×64 (optimized for speed)        ✅
+- Training: Single GPU (RTX 5060 Ti)             ✅
+- Config: Python class (MambaTSRConfig)          ✅
+- Features: Plotting, checkpointing, validation  ✅
+```
+
+**We wrote the training logic, but use the model architecture from the original MambaTSR repository.**
+
 ### Project Structure
 
 ```python
-# Main training script
+# Main training script (OUR CODE)
 train_mambatsr_plantvillage.py
     ├── MambaTSRConfig          # Configuration class
-    ├── prepare_dataset()       # Data loading
-    ├── build_model()           # Model construction
+    ├── prepare_dataset()       # Data loading for PlantVillage
+    ├── build_model()           # Model construction (imports VSSM)
     ├── train_one_epoch()       # Training loop
     ├── validate()              # Validation
     └── save_checkpoint()       # Model saving
 
-# Dependencies
+# Dependencies (EXTERNAL - auto-setup via setup_mambatsr.py)
 MambaTSR/
     ├── models/vmamba.py        # VSSM class (imported)
     ├── models/VSSBlock.py      # Vision State Space blocks
@@ -245,6 +292,78 @@ python test_train_pipeline.py
 ```bash
 jupyter notebook notebooks/Plant_Disease_MambaTSR.ipynb
 ```
+
+## ❓ FAQ (Frequently Asked Questions)
+
+### Q1: Tại sao code của bạn khác với MambaTSR gốc?
+
+**A:** Chúng tôi **KHÔNG copy** code MambaTSR. Chúng tôi chỉ:
+
+- ✅ **Import** class VSSM từ MambaTSR repo (như import library)
+- ✅ **Viết mới** training script cho PlantVillage dataset
+- ✅ **Tùy chỉnh** data loading, configuration, training loop
+
+**Tương tự như:**
+
+```python
+# Bạn không viết lại PyTorch, chỉ import:
+import torch
+from torchvision import models
+
+# Tương tự, chúng tôi import VSSM:
+from MambaTSR.models.vmamba import VSSM
+```
+
+### Q2: File `train.py` ở đâu?
+
+**A:** Có 2 file `train.py` khác nhau:
+
+1. **`MambaTSR/train.py`** (Original)
+
+   - Link: https://github.com/1024AILab/MambaTSR/blob/main/train.py
+   - Purpose: Train VSSM on ImageNet-1K
+
+2. **`train_mambatsr_plantvillage.py`** (Ours)
+   - Link: https://github.com/quoclam-doit/Plant_Disease/blob/main/train_mambatsr_plantvillage.py
+   - Purpose: Train VSSM on PlantVillage
+   - **Đây là file chính của project**
+
+### Q3: Làm sao chạy được mà không có model code?
+
+**A:** Setup script (`setup_mambatsr.py`) sẽ:
+
+1. Clone MambaTSR repository → Có `models/vmamba.py`
+2. Compile CUDA kernels → Có `selective_scan`
+3. Import vào `train_mambatsr_plantvillage.py` → Chạy được!
+
+```bash
+python setup_mambatsr.py  # Auto-download everything
+python train_mambatsr_plantvillage.py  # Now it works!
+```
+
+### Q4: Có vi phạm license không?
+
+**A:** KHÔNG! Chúng tôi:
+
+- ✅ Credit original authors (see Citation section)
+- ✅ Link to original repository
+- ✅ Use their code as a library (not copy)
+- ✅ Follow open-source best practices
+
+**Giống như sử dụng PyTorch, TensorFlow - hoàn toàn hợp lệ!**
+
+### Q5: Tại sao không push MambaTSR/ lên GitHub?
+
+**A:** Vì:
+
+- ❌ Đó là code của người khác
+- ❌ CUDA binaries rất lớn (~200MB)
+- ❌ Không cần thiết (users có thể auto-download)
+- ✅ Setup script handle việc này
+
+**Best practice: Link to original, don't copy!**
+
+---
 
 ## 📝 Citation
 
